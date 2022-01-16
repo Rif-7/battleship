@@ -17,7 +17,7 @@ class Ship {
   setPositions(start, direction) {
     this.positions = [];
 
-    function addPosition(cb) {
+    function _addPosition(cb) {
       for (let i = 0; i < this.body.length; i++) {
         this.positions.push(cb(start[0], start[1], i));
       }
@@ -25,16 +25,16 @@ class Ship {
 
     switch (direction) {
       case "r":
-        addPosition.call(this, (a, b, shift) => [a, b + shift]);
+        _addPosition.call(this, (a, b, shift) => [a, b + shift]);
         break;
       case "l":
-        addPosition.call(this, (a, b, shift) => [a, b - shift]);
+        _addPosition.call(this, (a, b, shift) => [a, b - shift]);
         break;
       case "u":
-        addPosition.call(this, (a, b, shift) => [a - shift, b]);
+        _addPosition.call(this, (a, b, shift) => [a - shift, b]);
         break;
       case "d":
-        addPosition.call(this, (a, b, shift) => [a + shift, b]);
+        _addPosition.call(this, (a, b, shift) => [a + shift, b]);
         break;
       default:
         throw Error("Invaid direction specified");
@@ -49,11 +49,37 @@ class Ship {
   }
 }
 
+class Player {
+  constructor() {
+    this.gameBoard = gameBoard();
+  }
+
+  makeRandomChoice() {
+    const cordA = Math.floor(Math.random() * this.gameBoard.boardSize + 1);
+    const cordB = Math.floor(Math.random() * this.gameBoard.boardSize + 1);
+    return [cordA, cordB];
+  }
+}
+
 function gameBoard() {
   const ships = [];
+  const missedShots = [];
+  const boardSize = 10;
 
   function addShip(ship) {
     ships.push(ship);
+  }
+
+  const getMissedShots = () => missedShots;
+
+  function recieveAttack(cordA, cordB) {
+    const containsShip = isShip(cordA, cordB);
+    if (containsShip) {
+      ships[containsShip.shipIndex].hit(containsShip.position);
+      return true;
+    }
+    missedShots.push([cordA, cordB]);
+    return false;
   }
 
   function isShip(cordA, cordB) {
@@ -68,7 +94,12 @@ function gameBoard() {
     }
     return false;
   }
-  return { isShip, addShip };
+
+  function checkIfAllShipsSank() {
+    return ships.every((ship) => ship.isSunk());
+  }
+
+  return { isShip, addShip, recieveAttack, getMissedShots, boardSize };
 }
 
 export { Ship, gameBoard };

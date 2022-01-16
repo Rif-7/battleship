@@ -19,7 +19,7 @@ test("testing Ships's isSunk method", () => {
   expect(ship.isSunk()).toBe(true);
 });
 
-test("testing Ship's hit method with wrong indexes", () => {
+test("testing Ship's hit method handling wrong indexes", () => {
   const ship = new Ship(3);
   expect(() => ship.hit(5)).toThrow();
 });
@@ -49,4 +49,21 @@ test("testing isShip function", () => {
     shipIndex: 0,
     position: 1,
   });
+});
+
+test("testing recieveAttack handling hits", () => {
+  const ship = new Ship(2);
+  ship.setPositions([1, 1], "l");
+  const board = gameBoard();
+  board.addShip(ship);
+  board.recieveAttack(1, 0);
+  expect(ship.body).toEqual([false, true]);
+  board.recieveAttack(1, 1);
+  expect(ship.body).toEqual([true, true]);
+});
+
+test("testing recieveAttack handling missed shots", () => {
+  const board = gameBoard();
+  board.recieveAttack(1, 1);
+  expect(board.getMissedShots()).toEqual([[1, 1]]);
 });
