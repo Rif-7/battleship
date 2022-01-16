@@ -16,22 +16,28 @@ class Ship {
 
   setPositions(start, direction) {
     this.positions = [];
-    if (direction === "r") {
+
+    function addPosition(cb) {
       for (let i = 0; i < this.body.length; i++) {
-        this.positions.push([start[0], start[1] + i]);
+        this.positions.push(cb(start[0], start[1], i));
       }
-    } else if (direction === "l") {
-      for (let i = 0; i < this.body.length; i++) {
-        this.positions.push([start[0], start[1] - i]);
-      }
-    } else if (direction === "u") {
-      for (let i = 0; i < this.body.length; i++) {
-        this.positions.push([start[0] - i, start[1]]);
-      }
-    } else if (direction === "d") {
-      for (let i = 0; i < this.body.length; i++) {
-        this.positions.push([start[0] + i, start[1]]);
-      }
+    }
+
+    switch (direction) {
+      case "r":
+        addPosition.call(this, (a, b, shift) => [a, b + shift]);
+        break;
+      case "l":
+        addPosition.call(this, (a, b, shift) => [a, b - shift]);
+        break;
+      case "u":
+        addPosition.call(this, (a, b, shift) => [a - shift, b]);
+        break;
+      case "d":
+        addPosition.call(this, (a, b, shift) => [a + shift, b]);
+        break;
+      default:
+        throw Error("Invaid direction specified");
     }
   }
 
