@@ -55,9 +55,14 @@ class Player {
   }
 
   makeRandomChoice() {
-    const cordA = Math.floor(Math.random() * this.gameBoard.boardSize + 1);
-    const cordB = Math.floor(Math.random() * this.gameBoard.boardSize + 1);
-    return [cordA, cordB];
+    const freeIndex = this.gameBoard.getFreeIndexes();
+    if (!freeIndex.length) {
+      return null;
+    }
+    const index = Math.floor(Math.random() * freeIndex.length);
+    const choice = freeIndex[index];
+    this.gameBoard.editFreeIndex(index);
+    return choice;
   }
 }
 
@@ -65,12 +70,28 @@ function gameBoard() {
   const ships = [];
   const missedShots = [];
   const boardSize = 10;
+  const freeIndexes = createFreeIndexes();
+
+  const getMissedShots = () => missedShots;
+  const getFreeIndexes = () => freeIndexes;
+
+  function editFreeIndex(index) {
+    freeIndexes.splice(index, 1);
+  }
 
   function addShip(ship) {
     ships.push(ship);
   }
 
-  const getMissedShots = () => missedShots;
+  function createFreeIndexes() {
+    const indexes = [];
+    for (let i = 0; i < boardSize; i++) {
+      for (let j = 0; j < boardSize; j++) {
+        indexes.push([i, j]);
+      }
+    }
+    return indexes;
+  }
 
   function recieveAttack(cordA, cordB) {
     const containsShip = isShip(cordA, cordB);
@@ -99,7 +120,15 @@ function gameBoard() {
     return ships.every((ship) => ship.isSunk());
   }
 
-  return { isShip, addShip, recieveAttack, getMissedShots, boardSize };
+  return {
+    isShip,
+    addShip,
+    recieveAttack,
+    getMissedShots,
+    getFreeIndexes,
+    editFreeIndex,
+    boardSize,
+  };
 }
 
-export { Ship, gameBoard };
+export { Ship, Player, gameBoard };

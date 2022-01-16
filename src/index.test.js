@@ -1,4 +1,4 @@
-import { Ship, gameBoard } from "./index";
+import { Ship, gameBoard, Player } from "./index";
 
 test("creating Ship object", () => {
   const ship = new Ship(4);
@@ -66,4 +66,16 @@ test("testing recieveAttack handling missed shots", () => {
   const board = gameBoard();
   board.recieveAttack(1, 1);
   expect(board.getMissedShots()).toEqual([[1, 1]]);
+});
+
+test("testing Players makRandomChoice method", () => {
+  const player = new Player();
+  const initialLength = player.gameBoard.getFreeIndexes().length;
+  player.makeRandomChoice();
+  expect(player.gameBoard.getFreeIndexes().length).toBe(initialLength - 1);
+  for (let i = 0; i < initialLength; i++) {
+    player.makeRandomChoice();
+  }
+
+  expect(player.gameBoard.getFreeIndexes()).toEqual([]);
 });
