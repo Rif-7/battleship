@@ -1,4 +1,4 @@
-import { Ship } from "./index";
+import { Ship, gameBoard } from "./index";
 
 test("creating Ship object", () => {
   const ship = new Ship(4);
@@ -22,4 +22,31 @@ test("testing Ships's isSunk method", () => {
 test("testing Ship's hit method with wrong indexes", () => {
   const ship = new Ship(3);
   expect(() => ship.hit(5)).toThrow();
+});
+
+test("testing Ship's setPositions function", () => {
+  const ship = new Ship(2);
+  ship.setPositions([0, 0], "r");
+  expect(ship.positions).toEqual([
+    [0, 0],
+    [0, 1],
+  ]);
+  ship.setPositions([1, 1], "u");
+  expect(ship.positions).toEqual([
+    [1, 1],
+    [0, 1],
+  ]);
+});
+
+test("testing isShip function", () => {
+  const ship = new Ship(2);
+  ship.setPositions([0, 0], "r");
+  const board = gameBoard();
+  board.addShip(ship);
+  expect(board.isShip(69, 69)).toBeFalsy();
+  expect(board.isShip(0, 0)).toBeTruthy();
+  expect(board.isShip(0, 1)).toEqual({
+    shipIndex: 0,
+    position: 1,
+  });
 });
