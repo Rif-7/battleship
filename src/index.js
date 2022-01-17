@@ -1,4 +1,5 @@
 import "./style.css";
+import { createBoard } from "./app/domMethods";
 
 class Ship {
   constructor(length) {
@@ -130,5 +131,17 @@ function gameBoard() {
     boardSize,
   };
 }
+
+function gameLoop() {
+  const player = new Player();
+  const com = new Player();
+
+  const playerBoard = document.querySelector(".player-board");
+  const comBoard = document.querySelector(".com-board");
+  createBoard(playerBoard, player.gameBoard.boardSize);
+  createBoard(comBoard, com.gameBoard.boardSize);
+}
+
+gameLoop();
 
 export { Ship, Player, gameBoard };
