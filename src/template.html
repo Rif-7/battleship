@@ -8,7 +8,24 @@
 </head>
 <body>
 
-    <div class="nav">Battleship</div>
+    <div class="new-game-modal">
+        <div class="place-ships">
+            <div class="board preview-board"></div>
+            <div class="data">
+                <div class="ship-name"></div>
+                <input class="positions" id="cordA" type="number" placeholder="Cord A" min="0" max="9"><br>
+                <input class="positions" id="cordB" type="number" placeholder="Cord B" min="0" max="9"><br>
+                <input class="positions" id="direction" type="text" placeholder="Direction"><br>
+                <button class="btn set-ship">Set Ship</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav">
+        <div class="nav-header">Battleship</div>
+        <button class="start-btn">Start Game</button>
+    </div>
+
     <div class="container">
         <div class="board-container">
             <div class="header">Enemy Board</div>

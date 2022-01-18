@@ -1,4 +1,8 @@
-import { Ship, gameBoard, Player } from "./index";
+/**
+ * @jest-environment jsdom
+ */
+
+import { Ship, gameBoard, Com } from "./index";
 
 test("creating Ship object", () => {
   const ship = new Ship(4);
@@ -68,8 +72,8 @@ test("testing recieveAttack handling missed shots", () => {
   expect(board.getMissedShots()).toEqual([[1, 1]]);
 });
 
-test("testing Players makRandomChoice method", () => {
-  const player = new Player();
+test("testing Coms makRandomChoice method", () => {
+  const player = new Com();
   const initialLength = player.gameBoard.getFreeIndexes().length;
   player.makeRandomChoice();
   expect(player.gameBoard.getFreeIndexes().length).toBe(initialLength - 1);

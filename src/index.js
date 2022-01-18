@@ -1,8 +1,9 @@
 import "./style.css";
-import { createBoard } from "./app/domMethods";
+import { createBoard, initDom } from "./app/domMethods";
 
 class Ship {
-  constructor(length) {
+  constructor(length, name = "ship") {
+    this.name = name;
     this.body = Array.from({ length: length }).fill(false);
     this.positions = [];
   }
@@ -55,6 +56,14 @@ class Player {
     this.gameBoard = gameBoard();
   }
 
+  addShips() {
+    this.gameBoard.addShip(new Ship(2, "Small Ship"));
+    this.gameBoard.addShip(new Ship(3, "Medium Ship"));
+    this.gameBoard.addShip(new Ship(4, "Large Ship"));
+  }
+}
+
+class Com extends Player {
   makeRandomChoice() {
     const freeIndex = this.gameBoard.getFreeIndexes();
     if (!freeIndex.length) {
@@ -75,6 +84,7 @@ function gameBoard() {
 
   const getMissedShots = () => missedShots;
   const getFreeIndexes = () => freeIndexes;
+  const getShips = () => ships;
 
   function editFreeIndex(index) {
     freeIndexes.splice(index, 1);
@@ -128,20 +138,47 @@ function gameBoard() {
     getMissedShots,
     getFreeIndexes,
     editFreeIndex,
+    getShips,
     boardSize,
   };
 }
 
-function gameLoop() {
-  const player = new Player();
-  const com = new Player();
-
-  const playerBoard = document.querySelector(".player-board");
-  const comBoard = document.querySelector(".com-board");
-  createBoard(playerBoard, player.gameBoard.boardSize);
-  createBoard(comBoard, com.gameBoard.boardSize);
+function shipPositionHandler(index, player, cords, direction) {
+  const ship = player.gameBoard.getShips()[index];
+  if (!["r", "l", "u", "d"].includes(direction)) {
+    direction = "r";
+  }
+  ship.setPositions(cords, direction);
+  console.log(ship.positions);
+  return;
 }
 
-gameLoop();
+function gameLoop() {
+  initDom();
 
-export { Ship, Player, gameBoard };
+  const player = new Player();
+  player.addShips();
+  const com = new Com();
+  com.addShips();
+
+  let shipIndex = 0;
+  const setShip = document.querySelector(".set-ship");
+  setShip.addEventListener("click", function () {
+    const cordA = document.getElementById("cordA").value * 1;
+    const cordB = document.getElementById("cordB").value * 1;
+    const direction = document.getElementById("direction").value;
+    shipPositionHandler(shipIndex, player, [cordA, cordB], direction);
+    shipIndex++;
+    if (shipIndex > player.gameBoard.getShips().length - 1) {
+      setShip.style.disabled = true;
+      document.querySelector(".new-game-modal").style.display = "none";
+      return;
+    }
+    document.querySelector(".ship-name").textContent =
+      player.gameBoard.getShips()[shipIndex].name;
+  });
+}
+
+document.addEventListener("DOMContentLoaded", gameLoop);
+
+export { Ship, Com, gameBoard };
