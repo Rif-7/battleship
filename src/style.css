@@ -104,3 +104,28 @@ body {
     width: 70px;
     height: 20px;
 }
+
+.ship-name {
+    font-size: 18px;
+    color: white;
+}
+
+.highlighted {
+    background-color: aquamarine;
+}
+
+.direction-label {
+    color: white;
+}
+
+.done {
+    border: none;
+    font-size: 24px;
+    background-color: aqua;
+    color: black;
+    font-family: monospace;
+    font-weight: 700;
+    padding: 3px 6px;
+    border-radius: 4px;
+    display: none;
+}

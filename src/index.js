@@ -1,5 +1,5 @@
 import "./style.css";
-import { createBoard, initDom } from "./app/domMethods";
+import { createBoard, initDom, hightlightBoard } from "./app/domMethods";
 
 class Ship {
   constructor(length, name = "ship") {
@@ -74,6 +74,8 @@ class Com extends Player {
     this.gameBoard.editFreeIndex(index);
     return choice;
   }
+
+  positionShip() {}
 }
 
 function gameBoard() {
@@ -117,6 +119,9 @@ function gameBoard() {
   function isShip(cordA, cordB) {
     for (let i = 0; i < ships.length; i++) {
       const currentShip = ships[i];
+      if (!currentShip.positions.length) {
+        continue;
+      }
       for (let j = 0; j < currentShip.body.length; j++) {
         const currentCords = currentShip.positions[j];
         if (currentCords[0] === cordA && currentCords[1] === cordB) {
@@ -143,41 +148,78 @@ function gameBoard() {
   };
 }
 
-function shipPositionHandler(index, player, cords, direction) {
-  const ship = player.gameBoard.getShips()[index];
-  if (!["r", "l", "u", "d"].includes(direction)) {
-    direction = "r";
+function shipPositionHandler(ship, player, cords, direction) {
+  if (player.gameBoard.isShip(cords[0], cords[1])) {
+    alert("There is already a ship there");
+    return false;
   }
   ship.setPositions(cords, direction);
-  console.log(ship.positions);
-  return;
+  const lastIndex = ship.positions.at(-1);
+  const boardSize = player.gameBoard.boardSize;
+  console.log("ran");
+  if (
+    lastIndex[0] >= boardSize ||
+    lastIndex[1] >= boardSize ||
+    lastIndex[0] < 0 ||
+    lastIndex[1] < 0
+  ) {
+    ship.positions = [];
+    alert("Invalid Position");
+    return false;
+  }
+  return true;
 }
 
-function gameLoop() {
-  initDom();
-
-  const player = new Player();
-  player.addShips();
-  const com = new Com();
-  com.addShips();
-
+function createNewGame(player) {
   let shipIndex = 0;
+  const previewBoard = document.querySelector(".preview-board");
   const setShip = document.querySelector(".set-ship");
-  setShip.addEventListener("click", function () {
-    const cordA = document.getElementById("cordA").value * 1;
-    const cordB = document.getElementById("cordB").value * 1;
+
+  document.querySelector(".ship-name").textContent =
+    player.gameBoard.getShips()[shipIndex].name;
+
+  setShip.addEventListener("click", function handler() {
+    const cordA = Number(document.getElementById("cordA").value);
+    const cordB = Number(document.getElementById("cordB").value);
     const direction = document.getElementById("direction").value;
-    shipPositionHandler(shipIndex, player, [cordA, cordB], direction);
+
+    const ship = player.gameBoard.getShips()[shipIndex];
+    const result = shipPositionHandler(ship, player, [cordA, cordB], direction);
+    if (!result) return;
+
     shipIndex++;
+    hightlightBoard(previewBoard, ship.positions);
+
     if (shipIndex > player.gameBoard.getShips().length - 1) {
-      setShip.style.disabled = true;
-      document.querySelector(".new-game-modal").style.display = "none";
+      setShip.removeEventListener("click", handler);
+      document.querySelector(".done").style.display = "block";
       return;
     }
     document.querySelector(".ship-name").textContent =
       player.gameBoard.getShips()[shipIndex].name;
   });
 }
+
+function gameLoop() {
+  const player = new Player();
+  player.addShips();
+  const com = new Com();
+  com.addShips();
+
+  initDom();
+  createNewGame(player);
+}
+
+const doneBtn = document.querySelector(".done");
+doneBtn.addEventListener("click", () => {
+  const modal = document.querySelector(".new-game-modal");
+  const playerBoard = document.querySelector(".player-board");
+  const comBoard = document.querySelector(".com-board");
+
+  modal.style.display = "none";
+  createBoard(playerBoard);
+  createBoard(comBoard);
+});
 
 document.addEventListener("DOMContentLoaded", gameLoop);
 
