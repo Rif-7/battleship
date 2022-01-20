@@ -36,6 +36,11 @@ function hightlightBoard(board, cords) {
 
 function initDom() {
   displayModal();
+
+  const playerBoard = document.querySelector(".player-board");
+  const comBoard = document.querySelector(".com-board");
+  createBoard(playerBoard);
+  createBoard(comBoard);
 }
 
 export { createBoard, initDom, hightlightBoard };

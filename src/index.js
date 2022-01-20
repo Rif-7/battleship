@@ -61,6 +61,20 @@ class Player {
     this.gameBoard.addShip(new Ship(3, "Medium Ship"));
     this.gameBoard.addShip(new Ship(4, "Large Ship"));
   }
+
+  isValidPosition(ship) {
+    const boardSize = this.gameBoard.boardSize;
+    const lastIndex = ship.positions.at(-1);
+    if (
+      lastIndex[0] >= boardSize ||
+      lastIndex[1] >= boardSize ||
+      lastIndex[0] < 0 ||
+      lastIndex[1] < 0
+    ) {
+      return false;
+    }
+    return true;
+  }
 }
 
 class Com extends Player {
@@ -75,7 +89,38 @@ class Com extends Player {
     return choice;
   }
 
-  positionShip() {}
+  positionShip(ship) {
+    const direction = ["r", "l", "u", "d"][Math.floor(Math.random() * 4)];
+    const boardSize = this.gameBoard.boardSize;
+    const shipSize = ship.body.length;
+    let cordA;
+    let cordB;
+    switch (direction) {
+      case "r":
+        cordA = getRndInteger(0, boardSize - 1);
+        cordB = getRndInteger(0, boardSize - shipSize);
+        break;
+      case "l":
+        cordA = getRndInteger(0, boardSize - 1);
+        cordB = getRndInteger(shipSize, boardSize - 1);
+        break;
+      case "u":
+        cordA = getRndInteger(shipSize, boardSize - 1);
+        cordB = getRndInteger(0, boardSize - 1);
+        break;
+      case "d":
+        cordA = getRndInteger(0, boardSize - shipSize);
+        cordB = getRndInteger(0, boardSize - 1);
+        break;
+      default:
+        throw Error("Invaid direction");
+    }
+    ship.setPositions([cordA, cordB], direction);
+  }
+}
+
+function getRndInteger(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 function gameBoard() {
@@ -149,20 +194,21 @@ function gameBoard() {
 }
 
 function shipPositionHandler(ship, player, cords, direction) {
-  if (player.gameBoard.isShip(cords[0], cords[1])) {
-    alert("There is already a ship there");
-    return false;
-  }
   ship.setPositions(cords, direction);
-  const lastIndex = ship.positions.at(-1);
-  const boardSize = player.gameBoard.boardSize;
-  console.log("ran");
-  if (
-    lastIndex[0] >= boardSize ||
-    lastIndex[1] >= boardSize ||
-    lastIndex[0] < 0 ||
-    lastIndex[1] < 0
-  ) {
+  const positions = ship.positions;
+  ship.positions = [];
+
+  for (let i = 0; i < ship.body.length; i++) {
+    const currentCords = positions[i];
+    if (player.gameBoard.isShip(currentCords[0], currentCords[1])) {
+      alert("There is already a ship there");
+      return false;
+    }
+  }
+
+  ship.positions = positions;
+
+  if (!player.isValidPosition(ship)) {
     ship.positions = [];
     alert("Invalid Position");
     return false;
@@ -210,17 +256,14 @@ function gameLoop() {
   createNewGame(player);
 }
 
-const doneBtn = document.querySelector(".done");
-doneBtn.addEventListener("click", () => {
-  const modal = document.querySelector(".new-game-modal");
-  const playerBoard = document.querySelector(".player-board");
-  const comBoard = document.querySelector(".com-board");
+document.addEventListener("DOMContentLoaded", function () {
+  gameLoop();
 
-  modal.style.display = "none";
-  createBoard(playerBoard);
-  createBoard(comBoard);
+  const doneBtn = document.querySelector(".done");
+  doneBtn.addEventListener("click", () => {
+    const modal = document.querySelector(".new-game-modal");
+    modal.style.display = "none";
+  });
 });
 
-document.addEventListener("DOMContentLoaded", gameLoop);
-
-export { Ship, Com, gameBoard };
+export { Ship, Com, Player, gameBoard };

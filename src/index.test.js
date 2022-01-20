@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { Ship, gameBoard, Com } from "./index";
+import { Ship, gameBoard, Player, Com } from "./index";
 
 test("creating Ship object", () => {
   const ship = new Ship(4);
@@ -82,4 +82,25 @@ test("testing Coms makRandomChoice method", () => {
   }
 
   expect(player.gameBoard.getFreeIndexes()).toEqual([]);
+});
+
+test("testing Players isValidPosition method", () => {
+  const ship = new Ship(3);
+  const player = new Player();
+  player.gameBoard.addShip(ship);
+
+  ship.setPositions([9, 9], "r");
+  expect(player.isValidPosition(ship)).toBeFalsy();
+
+  ship.setPositions([0, 0], "r");
+  expect(player.isValidPosition(ship)).toBeTruthy();
+});
+
+test.only("testing Coms positionShip method", () => {
+  const ship = new Ship(3);
+  const com = new Com();
+  com.gameBoard.addShip(ship);
+
+  com.positionShip(ship);
+  expect(com.isValidPosition(ship)).toBeTruthy();
 });

@@ -1,6 +1,7 @@
 body {
     margin: 0;
     background-color: #888;
+    font-family: monospace;
 }
 .container {
     display: flex;
@@ -69,8 +70,12 @@ body {
     transition: 100ms;
 }
 
-.start-btn:hover, .btn:hover {
+.start-btn:hover {
     transform: translate(3%, -3%);
+    box-shadow: -5px 5px 5px #555;
+}
+
+.btn:hover {
     box-shadow: -5px 5px 5px #555;
 }
 
@@ -91,7 +96,7 @@ body {
     width: 60%;
     height: 450px;
     background-color: #1f2937;
-    margin: 5% auto;
+    margin: 3% auto;
     display: flex;
     align-items: center;
     padding: 5px 10px;
