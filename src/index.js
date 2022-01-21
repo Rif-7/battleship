@@ -1,5 +1,10 @@
 import "./style.css";
-import { createBoard, initDom, hightlightBoard } from "./app/domMethods";
+import {
+  initDom,
+  hightlightBoard,
+  addListenerForComBoard,
+  makeComMove,
+} from "./app/domMethods";
 
 class Ship {
   constructor(length, name = "ship") {
@@ -186,6 +191,7 @@ function gameBoard() {
     editFreeIndex,
     getShips,
     boardSize,
+    checkIfAllShipsSank,
   };
 }
 
@@ -260,7 +266,44 @@ function gameLoop() {
   userSelection.then(function (result) {
     console.log(result);
   });
-  com.set;
+
+  function setComShips() {
+    const comShips = com.gameBoard.getShips();
+    for (let i = 0; i < comShips.length; i++) {
+      const currentShip = comShips[i];
+      com.positionShipRandomly(currentShip);
+      const positions = currentShip.positions;
+      currentShip.positions = [];
+
+      let isValid = true;
+      for (let j = 0; j < positions.length; j++) {
+        const currentPosition = positions[j];
+        if (com.gameBoard.isShip(currentPosition[0], currentPosition[1])) {
+          isValid = false;
+          break;
+        }
+      }
+      if (!isValid) {
+        i--;
+        continue;
+      }
+      currentShip.positions = positions;
+      console.log(positions);
+    }
+  }
+  setTimeout(setComShips, 0);
+  addListenerForComBoard(com, () => {
+    const comChoice = com.makeRandomChoice();
+    const result = player.gameBoard.recieveAttack(comChoice[0], comChoice[1]);
+    makeComMove(comChoice[0], comChoice[1], result);
+    setTimeout(() => {
+      if (com.gameBoard.checkIfAllShipsSank()) {
+        alert("player won");
+      } else if (player.gameBoard.checkIfAllShipsSank()) {
+        alert("Enemy won");
+      }
+    }, 0);
+  });
 }
 
 document.addEventListener("DOMContentLoaded", function () {

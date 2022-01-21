@@ -96,7 +96,7 @@ test("testing Players isValidPosition method", () => {
   expect(player.isValidPosition(ship)).toBeTruthy();
 });
 
-test.only("testing Coms positionShip method", () => {
+test("testing Coms positionShip method", () => {
   const ship = new Ship(3);
   const com = new Com();
   com.gameBoard.addShip(ship);

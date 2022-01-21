@@ -1,4 +1,6 @@
 const boardSize = 10;
+const playerBoard = document.querySelector(".player-board");
+const comBoard = document.querySelector(".com-board");
 
 function createBoard(board) {
   board.innerHTML = "";
@@ -34,13 +36,52 @@ function hightlightBoard(board, cords) {
   }
 }
 
+function addListenerForComBoard(com, cb) {
+  const cells = comBoard.querySelectorAll(".cell");
+  cells.forEach((cell) => {
+    const cordA = cell.getAttribute("data-corda");
+    const cordB = cell.getAttribute("data-cordb");
+    cell.addEventListener(
+      "click",
+      () => {
+        const result = com.gameBoard.recieveAttack(
+          Number(cordA),
+          Number(cordB)
+        );
+        if (result) {
+          cell.style.backgroundColor = "red";
+        } else {
+          cell.style.backgroundColor = "green";
+        }
+        cb();
+      },
+      { once: true }
+    );
+  });
+}
+
+function makeComMove(cordA, cordB, result) {
+  const cell = playerBoard.querySelector(
+    `.cell[data-corda='${cordA}'][data-cordb='${cordB}']`
+  );
+  if (result) {
+    cell.style.backgroundColor = "red";
+  } else {
+    cell.style.backgroundColor = "green";
+  }
+}
+
 function initDom() {
   displayModal();
 
-  const playerBoard = document.querySelector(".player-board");
-  const comBoard = document.querySelector(".com-board");
   createBoard(playerBoard);
   createBoard(comBoard);
 }
 
-export { createBoard, initDom, hightlightBoard };
+export {
+  createBoard,
+  initDom,
+  hightlightBoard,
+  addListenerForComBoard,
+  makeComMove,
+};
