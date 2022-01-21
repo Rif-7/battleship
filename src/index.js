@@ -89,7 +89,7 @@ class Com extends Player {
     return choice;
   }
 
-  positionShip(ship) {
+  positionShipRandomly(ship) {
     const direction = ["r", "l", "u", "d"][Math.floor(Math.random() * 4)];
     const boardSize = this.gameBoard.boardSize;
     const shipSize = ship.body.length;
@@ -117,10 +117,6 @@ class Com extends Player {
     }
     ship.setPositions([cordA, cordB], direction);
   }
-}
-
-function getRndInteger(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 function gameBoard() {
@@ -216,7 +212,7 @@ function shipPositionHandler(ship, player, cords, direction) {
   return true;
 }
 
-function createNewGame(player) {
+function createNewGame(player, resolve) {
   let shipIndex = 0;
   const previewBoard = document.querySelector(".preview-board");
   const setShip = document.querySelector(".set-ship");
@@ -239,11 +235,16 @@ function createNewGame(player) {
     if (shipIndex > player.gameBoard.getShips().length - 1) {
       setShip.removeEventListener("click", handler);
       document.querySelector(".done").style.display = "block";
+      resolve("Success");
       return;
     }
     document.querySelector(".ship-name").textContent =
       player.gameBoard.getShips()[shipIndex].name;
   });
+}
+
+function getRndInteger(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 function gameLoop() {
@@ -253,7 +254,13 @@ function gameLoop() {
   com.addShips();
 
   initDom();
-  createNewGame(player);
+  const userSelection = new Promise(function (resolve) {
+    createNewGame(player, resolve);
+  });
+  userSelection.then(function (result) {
+    console.log(result);
+  });
+  com.set;
 }
 
 document.addEventListener("DOMContentLoaded", function () {

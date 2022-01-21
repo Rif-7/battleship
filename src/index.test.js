@@ -101,6 +101,6 @@ test.only("testing Coms positionShip method", () => {
   const com = new Com();
   com.gameBoard.addShip(ship);
 
-  com.positionShip(ship);
+  com.positionShipRandomly(ship);
   expect(com.isValidPosition(ship)).toBeTruthy();
 });
