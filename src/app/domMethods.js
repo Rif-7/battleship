@@ -1,6 +1,8 @@
 const boardSize = 10;
 const playerBoard = document.querySelector(".player-board");
 const comBoard = document.querySelector(".com-board");
+const resultDiv = document.querySelector(".result-modal");
+const winnerDiv = document.querySelector(".winner-details");
 
 function createBoard(board) {
   board.innerHTML = "";
@@ -53,11 +55,26 @@ function addListenerForComBoard(com, cb) {
         } else {
           cell.style.backgroundColor = "green";
         }
-        cb();
+        if (com.gameBoard.checkIfAllShipsSank()) {
+          winnerDiv.textContent = "Player Won";
+          gameEnd();
+          return;
+        }
+
+        const cbResult = cb();
+        if (cbResult) {
+          winnerDiv.textContent = "Com Won";
+          gameEnd();
+        }
       },
       { once: true }
     );
   });
+}
+
+function gameEnd() {
+  resultDiv.style.display = "block";
+  comBoard.classList.add("disabled-div");
 }
 
 function makeComMove(cordA, cordB, result) {
@@ -76,6 +93,10 @@ function initDom() {
 
   createBoard(playerBoard);
   createBoard(comBoard);
+  document.querySelector(".close-btn").addEventListener("click", () => {
+    resultDiv.style.display = "none";
+  });
+  comBoard.classList.remove("disabled-div");
 }
 
 export {
