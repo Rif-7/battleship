@@ -85,13 +85,31 @@ class Player {
 }
 
 class Com extends Player {
+  constructor() {
+    super();
+    this.previousHit = { wasHit: false, indexes: [], index: null };
+  }
   makeRandomChoice() {
     const freeIndex = this.gameBoard.getFreeIndexes();
     if (!freeIndex.length) {
       return null;
     }
-    const index = Math.floor(Math.random() * freeIndex.length);
-    const choice = freeIndex[index];
+    let index = Math.floor(Math.random() * freeIndex.length);
+    if (this.previousHit.wasHit) {
+      index = this.previousHit.index;
+      this.previousHit.indexes = [index, index - 1, index + 7, index - 10];
+      this.previousHit.indexes.splice(0, 1);
+    } else if (this.previousHit.indexes.length > 0) {
+      index = this.previousHit.indexes[0];
+      this.previousHit.indexes.splice(0, 1);
+    }
+
+    let choice = freeIndex.at(index);
+    if (!choice) {
+      index = Math.floor(Math.random() * freeIndex.length);
+      choice = freeIndex.at(index);
+    }
+    this.previousHit.index = index;
     this.gameBoard.editFreeIndex(index);
     return choice;
   }
@@ -240,10 +258,16 @@ function gameLoop() {
       currentShip.positions = positions;
     }
   }
+
   setTimeout(setComShips, 0);
   addListenerForComBoard(com, () => {
     const comChoice = com.makeRandomChoice();
     const result = player.gameBoard.recieveAttack(comChoice[0], comChoice[1]);
+    if (result) {
+      com.previousHit.wasHit = true;
+    } else {
+      com.previousHit.wasHit = false;
+    }
     makeComMove(comChoice[0], comChoice[1], result);
     if (player.gameBoard.checkIfAllShipsSank()) {
       return true;

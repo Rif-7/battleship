@@ -66,12 +66,6 @@ test("testing recieveAttack handling hits", () => {
   expect(ship.body).toEqual([true, true]);
 });
 
-test("testing recieveAttack handling missed shots", () => {
-  const board = gameBoard();
-  board.recieveAttack(1, 1);
-  expect(board.getMissedShots()).toEqual([[1, 1]]);
-});
-
 test("testing Coms makRandomChoice method", () => {
   const player = new Com();
   const initialLength = player.gameBoard.getFreeIndexes().length;
