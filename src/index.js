@@ -6,7 +6,7 @@ import {
   makeComMove,
 } from "./app/domMethods";
 
-import { getRndInteger, shipPositionHandler } from "./app/helpers";
+import { getRndInteger, createNewGame } from "./app/helpers";
 
 class Ship {
   constructor(length, name = "ship") {
@@ -188,39 +188,9 @@ function gameBoard() {
     getFreeIndexes,
     editFreeIndex,
     getShips,
-    boardSize,
     checkIfAllShipsSank,
+    boardSize,
   };
-}
-
-function createNewGame(player, resolve) {
-  let shipIndex = 0;
-  const previewBoard = document.querySelector(".preview-board");
-  const setShip = document.querySelector(".set-ship");
-
-  document.querySelector(".ship-name").textContent =
-    player.gameBoard.getShips()[shipIndex].name;
-
-  setShip.addEventListener("click", function handler() {
-    const cordA = Number(document.getElementById("cordA").value);
-    const cordB = Number(document.getElementById("cordB").value);
-    const direction = document.getElementById("direction").value;
-
-    const ship = player.gameBoard.getShips()[shipIndex];
-    const result = shipPositionHandler(ship, player, [cordA, cordB], direction);
-    if (!result) return;
-
-    shipIndex++;
-    hightlightBoard(previewBoard, ship.positions);
-
-    if (shipIndex > player.gameBoard.getShips().length - 1) {
-      setShip.removeEventListener("click", handler);
-      resolve("Success");
-      return;
-    }
-    document.querySelector(".ship-name").textContent =
-      player.gameBoard.getShips()[shipIndex].name;
-  });
 }
 
 function gameLoop() {
@@ -284,7 +254,6 @@ function gameLoop() {
 
 document.addEventListener("DOMContentLoaded", function () {
   gameLoop();
-
   const startBtn = document.querySelector(".start-btn");
   startBtn.addEventListener("click", gameLoop);
 });

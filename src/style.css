@@ -156,18 +156,6 @@ body {
     background-color: red;
 }
 
-.done {
-    border: none;
-    font-size: 18px;
-    background-color: aqua;
-    color: black;
-    font-family: monospace;
-    font-weight: 700;
-    padding: 3px 6px;
-    border-radius: 4px;
-    display: none;
-}
-
 .disabled-div {
     pointer-events: none;
 }
