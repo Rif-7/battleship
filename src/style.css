@@ -93,7 +93,7 @@ body {
 }
 
 .place-ships {
-    width: 60%;
+    width: 40%;
     height: 450px;
     background-color: #1f2937;
     margin: 5% auto;
@@ -117,7 +117,7 @@ body {
 }
 
 .highlighted {
-    background-color: aquamarine;
+    background-color: #3882f6;
 }
 
 .direction-label {

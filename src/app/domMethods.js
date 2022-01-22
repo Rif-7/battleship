@@ -3,6 +3,8 @@ const playerBoard = document.querySelector(".player-board");
 const comBoard = document.querySelector(".com-board");
 const resultDiv = document.querySelector(".result-modal");
 const winnerDiv = document.querySelector(".winner-details");
+const missedColor = "#32CD32";
+const hitColor = "#D2122E";
 
 function createBoard(board) {
   board.innerHTML = "";
@@ -51,9 +53,9 @@ function addListenerForComBoard(com, cb) {
           Number(cordB)
         );
         if (result) {
-          cell.style.backgroundColor = "red";
+          cell.style.backgroundColor = hitColor;
         } else {
-          cell.style.backgroundColor = "green";
+          cell.style.backgroundColor = missedColor;
         }
         if (com.gameBoard.checkIfAllShipsSank()) {
           winnerDiv.textContent = "Player Won";
@@ -61,6 +63,7 @@ function addListenerForComBoard(com, cb) {
           return;
         }
 
+        // Callback returns true if Com has won
         const cbResult = cb();
         if (cbResult) {
           winnerDiv.textContent = "Com Won";
@@ -82,9 +85,9 @@ function makeComMove(cordA, cordB, result) {
     `.cell[data-corda='${cordA}'][data-cordb='${cordB}']`
   );
   if (result) {
-    cell.style.backgroundColor = "red";
+    cell.style.backgroundColor = hitColor;
   } else {
-    cell.style.backgroundColor = "green";
+    cell.style.backgroundColor = missedColor;
   }
 }
 

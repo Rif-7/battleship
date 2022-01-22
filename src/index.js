@@ -235,13 +235,16 @@ function gameLoop() {
   });
   userSelection
     .then(() => {
-      return new Promise((resolve) => {
-        setTimeout(resolve, 2000);
-      });
-    })
-    .then(() => {
       const modal = document.querySelector(".new-game-modal");
       modal.style.display = "none";
+      const playerBoard = document.querySelector(".player-board");
+      const playerShips = player.gameBoard.getShips();
+      for (let i = 0; i < playerShips.length; i++) {
+        hightlightBoard(playerBoard, playerShips[i].positions);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
     });
 
   function setComShips() {
