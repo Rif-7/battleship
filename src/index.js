@@ -107,7 +107,7 @@ class Com extends Player {
     let index = Math.floor(Math.random() * freeIndex.length);
     if (this.previousHit.wasHit) {
       index = this.previousHit.index;
-      this.previousHit.indexes = [index, index - 1, index + 7, index - 10];
+      this.previousHit.indexes = [index, index - 1, index + 7, index - 9];
       this.previousHit.indexes.splice(0, 1);
     } else if (this.previousHit.indexes.length > 0) {
       index = this.previousHit.indexes[0];

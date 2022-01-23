@@ -96,13 +96,15 @@ body {
     width: 40%;
     height: 450px;
     background-color: #1f2937;
-    margin: 5% auto;
+    margin: 4% auto;
+    margin-bottom: 0%;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    padding: 5px 10px;
+    padding: 24px 10px;
     border: 5px solid white ;
     border-radius: 4px;
-    gap: 24px;
+    gap: 10px;
     transform: scale(115%);
 }
 
@@ -160,3 +162,9 @@ body {
     pointer-events: none;
 }
 
+.ship-no {
+    font-size: 18px;
+    text-align: center;
+    font-weight: 700;
+    color: white;
+}

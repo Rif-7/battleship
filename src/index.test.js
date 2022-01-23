@@ -99,7 +99,7 @@ test("testing Coms positionShip method", () => {
   expect(com.isValidPosition(ship)).toBeTruthy();
 });
 
-test.only("testing players checkPosition method", () => {
+test("testing players checkPosition method", () => {
   const player = new Player();
   expect(player.checkPosition([0, 0])).toBeTruthy();
   expect(player.checkPosition([0, 88])).toBeFalsy();

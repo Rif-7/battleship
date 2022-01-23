@@ -21,23 +21,20 @@ function shipPositionHandler(ship, player, cords, direction) {
   return true;
 }
 
-function changeDirection(direction) {
-  if (direction === "r") {
-    return "d";
-  }
-  return "r";
-}
-
 function createNewGame(player, resolve) {
   let shipIndex = 0;
   const previewBoard = document.querySelector(".preview-board");
-  let currentShip = player.gameBoard.getShips()[shipIndex];
+  const playerShips = player.gameBoard.getShips();
+  let currentShip = playerShips[shipIndex];
   let direction = "r";
   let highlightedCells = [];
+  const shipNoInfo = document.querySelector(".ship-no");
 
   document.querySelector(".change-direction").addEventListener("click", () => {
-    direction = changeDirection(direction);
+    direction = direction === "r" ? "d" : "r";
   });
+
+  shipNoInfo.textContent = `1/${playerShips.length}`;
 
   const cells = previewBoard.querySelectorAll(".cell");
   cells.forEach((cell) => {
@@ -76,10 +73,12 @@ function createNewGame(player, resolve) {
         hightlightBoard(previewBoard, currentShip.positions, "selected");
         highlightedCells = [];
         shipIndex++;
-        if (shipIndex > player.gameBoard.getShips().length - 1) {
+        shipNoInfo.textContent = `${shipIndex + 1}/${playerShips.length}`;
+        if (shipIndex > playerShips.length - 1) {
           resolve("success");
+          return;
         }
-        currentShip = player.gameBoard.getShips()[shipIndex];
+        currentShip = playerShips[shipIndex];
       }
     });
   });
