@@ -23,12 +23,12 @@ class Ship {
     return this;
   }
 
-  setPositions(start, direction) {
-    this.positions = [];
+  getPositions(start, direction) {
+    const pos = [];
 
     function _addPosition(cb) {
       for (let i = 0; i < this.body.length; i++) {
-        this.positions.push(cb(start[0], start[1], i));
+        pos.push(cb(start[0], start[1], i));
       }
     }
 
@@ -48,6 +48,12 @@ class Ship {
       default:
         throw Error("Invaid direction specified");
     }
+
+    return pos;
+  }
+
+  setPositions(start, direction) {
+    this.positions = this.getPositions(start, direction);
   }
 
   isSunk() {
@@ -70,8 +76,12 @@ class Player {
   }
 
   isValidPosition(ship) {
-    const boardSize = this.gameBoard.boardSize;
     const lastIndex = ship.positions.at(-1);
+    return this.checkPosition(lastIndex);
+  }
+
+  checkPosition(lastIndex) {
+    const boardSize = this.gameBoard.boardSize;
     if (
       lastIndex[0] >= boardSize ||
       lastIndex[1] >= boardSize ||

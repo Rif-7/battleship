@@ -30,13 +30,17 @@ function displayModal() {
   createBoard(previewBoard, 10);
 }
 
-function hightlightBoard(board, cords) {
+function hightlightBoard(board, cords, className = "highlighted") {
   for (let i = 0; i < cords.length; i++) {
     const currentCords = cords[i];
-    const cell = board.querySelector(
-      `.cell[data-corda='${currentCords[0]}'][data-cordb='${currentCords[1]}']`
-    );
-    cell.classList.add("highlighted");
+    try {
+      const cell = board.querySelector(
+        `.cell[data-corda='${currentCords[0]}'][data-cordb='${currentCords[1]}']`
+      );
+      cell.classList.add(className);
+    } catch {
+      continue;
+    }
   }
 }
 
